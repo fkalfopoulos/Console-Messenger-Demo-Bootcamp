@@ -1,0 +1,144 @@
+﻿<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="IMModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:devart="http://devart.com/schemas/edml/StorageSchemaExtensions/1.0" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="IMEntitiesStoreContainer">
+          <EntitySet Name="Messages" EntityType="IMModel.Store.Message" store:Type="Tables" Schema="dbo" Table="Message" />
+          <EntitySet Name="Users" EntityType="IMModel.Store.User" store:Type="Tables" Schema="dbo" Table="User" />
+          <AssociationSet Name="FK_Message_User" Association="IMModel.Store.FK_Message_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="MessageId" />
+          </Key>
+          <Property Name="MessageId" Type="int" Nullable="false" />
+          <Property Name="Userid" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="sender" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="receiver" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Data" Type="nvarchar" Nullable="false" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="Password" Type="nvarchar" Nullable="false" MaxLength="8" />
+          <Property Name="Role" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Message_User">
+          <End Role="User" Type="IMModel.Store.User" Multiplicity="1" />
+          <End Role="Message" Type="IMModel.Store.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="Userid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="IMModel" Alias="Self" d4p1:ViewGeneration="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:devart="http://devart.com/schemas/edml/ConceptualSchemaExtensions/1.0" xmlns:ed="http://devart.com/schemas/EntityDeveloper/1.0" annotation:UseStrongSpatialTypes="false" xmlns:d4p1="http://devart.com/schemas/edml/ConceptualSchemaExtensions/1.0" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="IMEntities" annotation:LazyLoadingEnabled="true" ed:Guid="68eb8f64-e8a7-4e83-bdca-2a32fe0ccaa5">
+          <EntitySet Name="Messages" EntityType="IMModel.Message" />
+          <EntitySet Name="Users" EntityType="IMModel.User" />
+          <AssociationSet Name="FK_Message_UserSet" Association="IMModel.FK_Message_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Message" ed:Guid="b1d36a99-4af8-43a1-a6d2-eaf8803a6568">
+          <Key>
+            <PropertyRef Name="MessageId" />
+          </Key>
+          <Property Name="MessageId" Type="Int32" Nullable="false" ed:ValidateRequired="true" ed:Guid="fe97854d-d6cb-46b2-b99d-6be4cdb482d4" />
+          <Property Name="Userid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" ed:ValidateRequired="true" ed:Guid="f3b98d2e-87cf-4350-b428-800f74e57276" />
+          <Property Name="Sender" Type="String" Nullable="false" MaxLength="30" Unicode="true" ed:ValidateMaxLength="30" ed:ValidateRequired="true" ed:Guid="563c5b61-2525-45b4-99ba-a98da8ef2629" />
+          <Property Name="Receiver" Type="String" Nullable="false" MaxLength="30" Unicode="true" ed:ValidateMaxLength="30" ed:ValidateRequired="true" ed:Guid="0651150c-402a-4e19-b112-369eb4b8c2dc" />
+          <Property Name="Date" Type="DateTime" ed:ValidateRequired="false" ed:Guid="95a410d6-edba-4932-b01d-6d7db0791166" />
+          <Property Name="Data" Type="String" Nullable="false" MaxLength="250" Unicode="true" ed:ValidateMaxLength="250" ed:ValidateRequired="true" ed:Guid="316a679c-e58d-418b-b0c8-41c553f008d8" />
+          <NavigationProperty Name="User" Relationship="IMModel.FK_Message_User" FromRole="Messages" ToRole="User" ed:Guid="86651a47-ad5f-40da-9ca6-33ad24473e1f" />
+        </EntityType>
+        <EntityType Name="User" ed:Guid="d60902c0-5cc7-4231-8899-579969550197">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" ed:ValidateRequired="true" ed:Guid="70547622-92c7-47c7-a7ed-d5a53c88822d" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" Unicode="true" ed:ValidateMaxLength="20" ed:ValidateRequired="true" ed:Guid="e7191282-b7a4-4a61-a732-bbcaac4550e1" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="8" Unicode="true" ed:ValidateMaxLength="8" ed:ValidateRequired="true" ed:Guid="8f4cd42d-0a61-433a-a7d6-71773fdf5848" />
+          <Property Name="Role" Type="Int32" Nullable="false" ed:ValidateRequired="true" ed:Guid="8f6c1826-0a18-4781-a382-ecb444a04409" />
+          <NavigationProperty Name="Messages" Relationship="IMModel.FK_Message_User" FromRole="User" ToRole="Messages" ed:Guid="173305f9-bcc9-4d78-ad8f-db2b49820c91" />
+        </EntityType>
+        <Association Name="FK_Message_User" ed:Guid="0d9decaa-e00c-40e0-bdcf-4f13faacc258">
+          <End Role="User" Type="IMModel.User" Multiplicity="1" />
+          <End Role="Messages" Type="IMModel.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="Userid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- MSL content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="IMEntitiesStoreContainer" CdmEntityContainer="IMEntities">
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="IMModel.Message">
+              <MappingFragment StoreEntitySet="Messages">
+                <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="MessageId" ColumnName="MessageId" />
+                <ScalarProperty Name="Userid" ColumnName="Userid" />
+                <ScalarProperty Name="Sender" ColumnName="sender" />
+                <ScalarProperty Name="Receiver" ColumnName="receiver" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="IMModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <edmx:Diagrams>
+      <Diagram Name="Main" />
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
