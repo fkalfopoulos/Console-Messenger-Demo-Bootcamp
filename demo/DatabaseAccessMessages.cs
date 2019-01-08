@@ -7,119 +7,93 @@ namespace demo
 {
     public class DatabaseAccessMessages
     {
+        public User LoggedIn;
+        public DatabaseAccess DB;
+        public DatabaseAccessMessages()
 
-        //public void ViewUserMessages()
-        //{
-        //    bool userExists;
-        //    string nameForViewMessages;
-        //    do
-        //    {
-        //        Console.Clear();
-
-        //        Console.WriteLine("======= Welcome Admin =======");
-
-        //        Console.WriteLine("======= Here you can view the users messages =======");
-        //        Console.WriteLine();
-        //        Console.WriteLine("Choose the username of the user you would like to view the messages:");
-
-        //        if (nameForViewMessages is null) // is ESC is pressed return to admin menu
-        //        {
-        //            return;
-        //        }
-        //        userExists = DatabaseAccess.DoesUsernameExists(nameForViewMessages); // Check if username already exists in database
-        //        if (!userExists)
-        //        {
-
-        //            Console.WriteLine("The username you entered does not exist.\nPlease choose another user.");
-
-        //            Console.ReadKey();
-        //        }
-        //        else
-        //        {
-        //            string header = ($"\nWould you like to view the user's sent or received messages?\n");
-        //            string[] mailboxes = new string[] { "Inbox", "Sent Messages", "Go Back" };
-        //            do
-        //            {
-        //                int option = messageMenuManager.ScrollMenu(header, mailboxes);
-
-        //                switch (option)
-        //                {
-        //                    case 0:
-        //                        ShowInbox(nameForViewMessages);
-        //                        break;
-        //                    case 1:
-        //                        ShowSentMessages(nameForViewMessages);
-        //                        break;
-        //                    case 2:
-        //                        return;
-        //                }
-        //            } while (true);
-        //        }
-        //    } while (!userExists);
-        //}
-
-
-        public void ShowInbox(string username)
         {
-            List<Message> inbox = new List<Message>(); // list to hold the received messages of user
+            DB = new DatabaseAccess();
+        }
+
+
+        public void DeleteMessage()
+        {
+
+            List<string> DeleteMenuOptions = new List<string>
+           {
+
+                "Delete All",
+                "Delete Recieved",
+                "Delete Sent"
+            };
+
+
+            int option = ConsoleMenu.GetUserChoice(DeleteMenuOptions, DesignedStrings.DeleteMsg).IndexOfChoice;
+
+
+
+            ChooseSentOrReceived();
+
+
+
+            Console.WriteLine("Choose the username of the user you would like to delete:");
+
+            bool checkinput = int.TryParse(Console.ReadLine(), out int deletemsg);
+
+            if (checkinput)
+
+
+                using (var context = new IMEntities())
+                {
+
+                    var msg = context.Messages.Where(x => x.MessageId == deletemsg).SingleOrDefault();
+                    if (msg != null)
+                    {
+                        context.Messages.Remove(msg);
+                        context.SaveChanges();
+                        Console.WriteLine("Message Deleted");
+                    }
+                    else
+                        Console.WriteLine("The message does not exist. Press any key to go back to the Main Menu");
+                }
+            Console.ReadKey();
+
+            Console.WriteLine($"\n Message '{deletemsg}' is no longer active .");
+            Console.WriteLine("\n\nPress any key to go back to  Menu.");
+
+            Console.ReadKey();
+        }
+
+        public void UpdateMessage(Message Updatedmessage)
+        {
+            Console.Write("\n\n\n\n\tNew Subject: ");
+            string newMessageSubject = Console.ReadLine();
+
+            Console.Write("\n\tNew Body: ");
+            string newMessageData = Console.ReadLine();
 
             using (var context = new IMEntities())
             {
+                {
 
-                inbox = context.Messages.Include("Reciever").Include("Sender")
-               .Where(x => x.Receiver.Username == username).ToList();
+                    Message newMessage = context.Messages.Find(Updatedmessage.MessageId);
+                    newMessage.Subject = newMessageSubject;
+                    newMessage.Data = newMessageData;
+                    newMessage.IsMessageShownToReciever = false;
+                    context.SaveChanges();
+
+                    Console.Write($"\n\n Message updated successfully\n\n\tOK");
+                }
+
+                Console.ReadKey(true);
             }
-
-            if (inbox.Count <= 0) // check if inbox is empty and exit method
-            {
-                Console.Clear();
-                Console.WriteLine($"\n\n\nThe Inbox of '{username}' is empty!");
-
-                Console.WriteLine("\n\n\n\nPress any key to go back.");
-
-                Console.ReadKey();
-
-                return;
-            }
-
-            // Print the received messages to console
-            // messageMenuManager.ScrollInboxMenu(username, inbox);
-
         }
 
-        public static void UpdateMessage(Message updatedMessage)
+
+        private void ChooseSentOrReceived()
+
         {
-            using (var context = new IMEntities())
-            {
-                Message originalMessage = context.Messages.Find(updatedMessage.MessageId);
-                originalMessage.Data = updatedMessage.Data;
-                context.SaveChanges();
-            }
         }
-
-        //// private bool DeleteAllMessages(User UserToDelete)
-        // {
-        //     using (var context = new IMEntities())
-        //     {
-        //         User user = context.Users.SingleOrDefault(u => u.Id == UserToDelete.Id);
-        //         List<Message> pmslist = context.Messages.Where(pm => pm.SenderId == user.Id || pm.RecieverId == user.Id).ToList();
-        //         foreach (Message pm in pmslist)
-        //         {
-        //             if (pm.SenderId == user.Id)
-        //             {
-        //                 pm.IsMessageShownToSender = false;
-        //                //δημιουργία personal message
-        //             }
-        //             else
-        //             {
-        //                 pm.IsMessageShownToReciever = false;
-        //                //δημιουργία personal message
-        //             }
-        //         }
-        //          context.SaveChanges();
-        // }
-
-
     }
 }
 
