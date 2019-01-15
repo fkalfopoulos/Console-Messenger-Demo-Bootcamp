@@ -8,7 +8,7 @@ namespace demo
     {
         public static class LogFile
         {
-            const string Path = @"C:\Users\MMNew\Desktop\Txts";
+            static string Path = Properties.Settings.Default.path;
             const string UserLog = "Users.txt", MessageLog = "Logmessages.txt";
 
             public static void LogMessage(Message LM)
