@@ -109,7 +109,8 @@ namespace demo
             {
                 "Delete All",
                 "Delete From Recieved",
-                "Delete From Sent"
+                "Delete From Sent",
+                "Return back"
             };
            
             int option = ConsoleMenu.GetUserChoice(DeleteMenuOptions, DesignedStrings.DeleteMsg).IndexOfChoice;
@@ -123,7 +124,7 @@ namespace demo
                     context.Messages.Remove(ToDelete);
                     context.SaveChanges();
                 }
-                else 
+                else
                 {
                     Console.WriteLine("\n\n\tWARNING!!!\n\n\tAre you sure you would like to delete EVERYTHING???");
                     Console.ReadKey();
@@ -131,11 +132,10 @@ namespace demo
                         .Where(msg => msg.SenderId == LoggedIn.Id || msg.RecieverId == LoggedIn.Id));
                     context.SaveChanges();
                 }
-
-                else
-                {
-
-                }
+                 
+               
+            
+                
             }
         }
 

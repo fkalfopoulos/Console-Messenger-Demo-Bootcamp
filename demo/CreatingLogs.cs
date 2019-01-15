@@ -8,8 +8,8 @@ namespace demo
     {
         public static class LogFile
         {
-            const string Path = @"C:\Users\MMNew\Desktop\";
-            const string UserLog = "LogUser.txt", MessageLog = "LogMessage.txt";
+            const string Path = @"C:\Users\MMNew\Desktop\Txts";
+            const string UserLog = "Users.txt", MessageLog = "Logmessages.txt";
 
             public static void LogMessage(Message LM)
             {
@@ -20,6 +20,13 @@ namespace demo
             {
                 File.AppendAllText(Path + UserLog, $"{LU.Username},{LU.RegisterDate},{LU.Role}");
             }
+
+            public static void UserList( User UL)
+
+            {
+                
+            }
+
 
             public static List<User> ReadUserLog()
             {

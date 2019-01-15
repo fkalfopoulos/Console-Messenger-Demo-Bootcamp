@@ -14,6 +14,7 @@ namespace demo
             Console.WriteLine("-------------");
             Console.WriteLine();
 
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("Enter username:");
             var usernameLogin = Console.ReadLine();
             Console.Write("Enter password:");
@@ -50,44 +51,61 @@ namespace demo
             var username = Console.ReadLine();
 
             Console.Write("Enter password:");
+
+
+
             var password = Console.ReadLine();
+            var keypress = Console.ReadKey(true);
 
-            using (var context = new IMEntities())
+            if (keypress.Key != ConsoleKey.Backspace && keypress.Key != ConsoleKey.Enter)
             {
-                if (username == "admin2" && password == "admin2")
-                {
-                    var checkUser = context.Users.SingleOrDefault(c => c.Username == username);
+                password += keypress.KeyChar;
+                Console.Write("*");
+            }
+            else if (keypress.Key == ConsoleKey.Backspace && password.Length > 0)
+            {
+                password = password.Remove(password.Length - 1);
+                Console.Write("\b \b");
 
-                    if (checkUser == null)
+
+                using (var context = new IMEntities())
+                {
+                    if (username == "admin3" && password == "admin3")
+                    {
+                        var checkUser = context.Users.SingleOrDefault(c => c.Username == username);
+
+                        if (checkUser == null)
+                        {
+                            context.Users.Add(new User()
+                            {
+                                Username = username,
+                                Password = password,
+                                Role = UserAccess.SuperAdministrator,
+                                RegisterDate = DateTime.Now,
+                                IsUserActive = true
+                            });
+
+                            context.SaveChanges();
+                        }
+                    }
+                    else
                     {
                         context.Users.Add(new User()
                         {
                             Username = username,
                             Password = password,
-                            Role = UserAccess.SuperAdministrator,
+                            Role = UserAccess.User,
                             RegisterDate = DateTime.Now,
                             IsUserActive = true
                         });
 
                         context.SaveChanges();
+                        Console.WriteLine("Registration Successful!");
+                        Console.ReadLine();
                     }
-                }
-                else
-                {
-                    context.Users.Add(new User()
-                    {
-                        Username = username,
-                        Password = password,
-                        Role = UserAccess.User,
-                        RegisterDate = DateTime.Now,
-                        IsUserActive = true
-                    });
-
-                    context.SaveChanges();
-                    Console.WriteLine("Registration Successful!");
-                    Console.ReadLine();
                 }
             }
         }
+
     }
 }

@@ -10,22 +10,28 @@ namespace demo
     class InputManager
     {
 
-        
 
 
-        
-
-
-        private bool IsUsernameCorrectLength(string input)
+        public bool CorrectPasswordLength(string password)
         {
-            return input.Length > 5 && input.Length < 20;
+            if (password.Length < 5 || password.Length > 12)
+            {
+                return false;
+            }
+            return true;
         }
 
 
 
 
-
-
-
+        public  bool IsUsernameCorrectLength(string username)
+        {
+            return username.Length > 5 && username.Length < 20;
+        }
     }
 }
+
+
+
+
+        
