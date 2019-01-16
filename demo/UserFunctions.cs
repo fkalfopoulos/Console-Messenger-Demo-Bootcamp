@@ -8,10 +8,12 @@ namespace demo
     public class UserFunctions
     {
         public User LoggedIn;
+        public DatabaseAccess DB;
 
         public UserFunctions(User ActiveUser)
         {
             LoggedIn = ActiveUser;
+            DB = new DatabaseAccess(LoggedIn);
         }
 
         public void AddUser(string username, string password, UserAccess Role = UserAccess.User)
@@ -48,12 +50,14 @@ namespace demo
         {
 
             Console.WriteLine(DesignedStrings.DeleteUsr);
+            List<User> UsersList = DB.GetAllUsers();
+            UserChoice Choice = ConsoleMenu.GetUserChoice(UsersList.Select(usr => usr.Username).ToList(), "Choose the right User for you ");
 
-            ViewAllUsers();
+
 
             string usernameForDelete;
 
-            Console.WriteLine("Choose the username of the user you would like to delete:");
+            //Console.WriteLine("Choose the username of the user you would like to delete:");
             usernameForDelete = Console.ReadLine();
 
             if (usernameForDelete is null)
@@ -77,7 +81,7 @@ namespace demo
                     Console.ReadKey();
                     return;
                 }
-                bool userActive = IsUserActive(usernameForDelete); // check if user is active
+                bool userActive = IsUserActive(usernameForDelete); 
 
                 if (!userActive)
                 {
@@ -102,6 +106,11 @@ namespace demo
                     Console.ReadKey();
                 }
             }
+        }
+
+        private User SelectUser()
+        {
+            throw new NotImplementedException();
         }
 
         public void ViewProfile()
@@ -132,7 +141,8 @@ namespace demo
                 "View Usernames",
                 "View Usernames & Date of Registration",
                 "View Usernames & UserIDs",
-                "View Usernames + Passwords"
+                "View Usernames + Passwords",
+                "View Usernames & Roles"
             };
 
             int option = ConsoleMenu.GetUserChoice(ViewMenuOptions, DesignedStrings.ViewUsr).IndexOfChoice;
@@ -154,7 +164,9 @@ namespace demo
                 case 3:
                     ShowUserPass();
                     break;
-
+                case 4:
+                    ShowUserRole();
+                    break;
             }
         }
 
@@ -175,18 +187,18 @@ namespace demo
         public void ShowUsernameDate()
         {
             Console.Clear();
-            Console.WriteLine("These are the users in the database ");
+            Console.WriteLine("These are the users in the database and their Date of Registration");
 
             List<User> usersdate = GetUsers();
             foreach (User user in usersdate)
             {
-                Console.WriteLine($"User :  {user.Username} + \n\n Date : {user.RegisterDate}");
+                Console.WriteLine($"User :  {user.Username} + \n Date : {user.RegisterDate}");
             }
             Console.WriteLine("Press any key to return to the main menu");
             Console.ReadKey();
         }
 
-        public static void ShowUserIds()
+        public  void ShowUserIds()
         {
             Console.Clear();
             Console.WriteLine("These are the usernames + user IDs in the database ");
@@ -200,15 +212,30 @@ namespace demo
             Console.ReadKey();
         }
 
-        public static void ShowUserPass()
+        public  void ShowUserPass()
         {
             Console.Clear();
-            Console.WriteLine("These are the usernames + user IDs in the database ");
+            Console.WriteLine("These are the usernames + user Passwords in the database ");
 
             List<User> usersnames = GetUsers();
             foreach (User user in usersnames)
             {
                 Console.WriteLine($"User : {user.Username} +  \n\n Password : {user.Password}");
+            }
+            Console.WriteLine("Press any key to return to the main menu");
+            Console.ReadKey();
+
+        }
+
+        public  void ShowUserRole()
+        {
+            Console.Clear();
+            Console.WriteLine("These are the usernames + user Roles in the database ");
+
+            List<User> usersnames = GetUsers();
+            foreach (User user in usersnames)
+            {
+                Console.WriteLine($"User : {user.Username} +  \n\n Password : {user.Role}");
             }
             Console.WriteLine("Press any key to return to the main menu");
             Console.ReadKey();
@@ -228,8 +255,7 @@ namespace demo
         {
 
         }
-
-
+        
         public static User FindUserViaUsername(string Username)
         {
             using (var context = new IMEntities())
@@ -237,7 +263,6 @@ namespace demo
                 return context.Users.SingleOrDefault(us => us.Username == Username);
             }
         }
-
 
         public static User FindUserViaUserId(int id)
         {

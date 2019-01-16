@@ -131,20 +131,16 @@ namespace demo
                     context.Messages.RemoveRange(context.Messages
                         .Where(msg => msg.SenderId == LoggedIn.Id || msg.RecieverId == LoggedIn.Id));
                     context.SaveChanges();
-                }
-                 
-               
-            
-                
+                }                                                    
             }
         }
 
         public void UpdateMessage(Message Updatedmessage)
         {
-            Console.Write("\n\n\n\n\tNew Subject: ");
+            Console.Write("\n\n\n\n\t Enter New Subject: ");
             string newMessageSubject = Console.ReadLine();
 
-            Console.Write("\n\tNew Body: ");
+            Console.Write("\n\tEnter New Body: ");
             string newMessageData = Console.ReadLine();
 
             using (var context = new IMEntities())
@@ -156,55 +152,12 @@ namespace demo
                     context.Entry(newMessage).State = EntityState.Modified;
                     // x = (y > 0) ? 5 : -1;
                     // x = (expression) ? true : false;
-                    Console.Write(context.SaveChanges() > 0 ? $"\n\n Message updated successfully\n\n\tOK" : "DUUUUde FUCK!");
+                    Console.Write(context.SaveChanges() > 0 ? $"\n\n Message updated successfully\n\n\tOK" : "DUUUUde failure occurred!");
                 }
 
                 Console.ReadKey(true);
             }
         }
-
-
-
-        public string InputUserName()
-        {
-            string username;
-
-            ConsoleKeyInfo keyPressed;
-            username = "";
-            do
-            {
-                keyPressed = Console.ReadKey(true); // Using false the pressed key is displayed in the console window
-                while (keyPressed.Key == ConsoleKey.Enter && username.Length == 0) // Prevent from typing zero length username
-                {
-
-                    Console.WriteLine("\nWrong username! Please try again.");
-
-                    keyPressed = Console.ReadKey(true);
-                }
-                if (keyPressed.Key == ConsoleKey.Escape)
-                {
-                    return null;
-                }
-                if ((!char.IsControl(keyPressed.KeyChar))) // To remove control characters
-                {
-                    username += keyPressed.KeyChar;
-                    Console.Write(keyPressed.KeyChar);
-                }
-                else
-                {
-                    if (keyPressed.Key == ConsoleKey.Backspace && username.Length > 0)
-                    {
-                        username = username.Substring(0, (username.Length - 1));
-                        Console.Write("\b \b");
-                    }
-                }
-            }
-            while (keyPressed.Key != ConsoleKey.Enter);
-            Console.WriteLine();
-
-            return username;
-        }
-
 
         public List<Message> GetUserMessages(User LoggedIn, bool IsUserSender)
         {

@@ -55,9 +55,8 @@
     <Compile Include="CreatingLogs.cs" />
     <Compile Include="DesignedStrings.cs" />
     <Compile Include="ConsoleMenu.cs" />
-    <Compile Include="InputManager.cs" />
     <Compile Include="MenuManager.cs" />
-    <Compile Include="MenuUtilities.cs" />
+    <Compile Include="InputChecking.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Migrations\201901051128447_InitialCreate.cs" />
     <Compile Include="Migrations\201901051128447_InitialCreate.Designer.cs">

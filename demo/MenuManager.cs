@@ -14,7 +14,7 @@ namespace demo
 
         public User LoggedIn;
         public DatabaseAccess DB;
-
+        public InputChecking IC;
         public UserFunctions UF;
 
 
@@ -23,6 +23,7 @@ namespace demo
             LoggedIn = LoggedInUser;
             DB = new DatabaseAccess(LoggedIn);
             UF = new UserFunctions(LoggedIn);
+            IC = new InputChecking();
         }
 
 
@@ -61,7 +62,7 @@ namespace demo
                     MainMenuOptions.Insert(4, EDIT_MESSAGE);
                 }
 
-                string option = ConsoleMenu.GetUserChoice(MainMenuOptions, DesignedStrings.Welcome).NameOfChoice;
+                string option = ConsoleMenu.GetUserChoice(MainMenuOptions, DesignedStrings.DemoMessenger).NameOfChoice;
 
                 switch (option)
                 {
@@ -98,7 +99,6 @@ namespace demo
                         break;
                     case VIEW_MESSAGES:
                         ChooseSentOrReceived();
-
                         break;
                     case SEND_MESSAGE:
                         MessageSend(LoggedIn);
@@ -128,7 +128,7 @@ namespace demo
             while (Receiver is null);
 
             Console.WriteLine(DesignedStrings.Messagestring + "\nPlease write the subject of your Message :");
-            string Subject = Console.ReadLine();
+            string Subject = IC.InputSubject();
 
             using (var context = new IMEntities())
             {
@@ -139,7 +139,7 @@ namespace demo
                     SenderId = Sender.Id,
                     RecieverId = Receiver.Id,
                     Subject = Subject,
-                    Data = Console.ReadLine(),
+                    Data = IC.InputMessage(),
                     Date = DateTime.Now
                 });
                 context.SaveChanges();
@@ -150,7 +150,6 @@ namespace demo
             Console.ReadKey();
         }
 
-
         public static User FindUserViaUserId(int id)
         {
             User result = null;
@@ -159,12 +158,11 @@ namespace demo
             {
                 result = context.Users.Find(id);
             }
-
             return result;
         }
 
 
-        public static User FindUserViaUsername(string username)
+        public  User FindUserViaUsername(string username)
         {
             User result = null;
 
@@ -192,7 +190,7 @@ namespace demo
         public User SelectUser()
         {
             List<User> UsersList = DB.GetAllUsers();
-            UserChoice Choice = ConsoleMenu.GetUserChoice(UsersList.Select(usr => usr.Username).ToList(), "Choose the User you wanna see");
+            UserChoice Choice = ConsoleMenu.GetUserChoice(UsersList.Select(usr => usr.Username).ToList(), "Choose the right User for you ");
 
             if (Choice.IndexOfChoice == -1)
             {
@@ -258,8 +256,5 @@ namespace demo
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
         }
-
-
     }
-
 }

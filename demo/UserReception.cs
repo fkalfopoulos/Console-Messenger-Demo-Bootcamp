@@ -6,6 +6,13 @@ namespace demo
 {
     class UserReception
     {
+        public InputChecking IC;
+        public UserReception()
+        {
+            IC = new InputChecking();
+        }
+
+
         public void LoginUser()
         {
             Console.Clear();
@@ -16,9 +23,12 @@ namespace demo
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("Enter username:");
-            var usernameLogin = Console.ReadLine();
+            var usernameLogin = IC.UsernameInput();
+
+
             Console.Write("Enter password:");
-            string password = Console.ReadLine();                           //MenuUtilities.MaskPassword();
+            string password = IC.InputPassword();
+
 
             User checkUser;
             using (var context = new IMEntities())
@@ -33,8 +43,10 @@ namespace demo
             }
             else
             {
-                Console.WriteLine("Welcome {0}", checkUser.Username);
-                Console.WriteLine("press any key to procceed to the main menu");
+                Console.Clear();
+                Console.WriteLine(DesignedStrings.Welcome);                 
+                Console.WriteLine("\nWelcome {0}", checkUser.Username);
+                Console.WriteLine("\npress any key to procceed to the main menu");
                 Console.ReadKey();
                 var MainMenu = new MenuManager(checkUser);
                 MainMenu.ManagerMenu();
@@ -44,23 +56,19 @@ namespace demo
         public void RegisterUser()
         {
             Console.Clear();
+            Console.WriteLine(DesignedStrings.CreateUsr);
             Console.WriteLine("\nRegister user");
             Console.WriteLine("-------------");
 
             Console.Write("\nEnter username:");
-            var username = Console.ReadLine();
+            var username = IC.UsernameInput();
 
             Console.Write("Enter password:");
-
-
-
-            var password = Console.ReadLine();
-
-
+            var password = IC.InputPassword();
 
             using (var context = new IMEntities())
             {
-                if (username == "admin3" && password == "admin3")
+                if (username == "admin" && password == "admin1")
                 {
                     var checkUser = context.Users.SingleOrDefault(c => c.Username == username);
 
