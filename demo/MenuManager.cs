@@ -120,33 +120,34 @@ namespace demo
 
         public void MessageSend(User Sender)
         {
-            User Receiver ;
+            User Receiver;
             do
             {
-                Receiver = SelectUser();                
+                Receiver = SelectUser();
             }
             while (Receiver is null);
 
             Console.WriteLine(DesignedStrings.Messagestring + "\nPlease write the subject of your Message :");
             string Subject = IC.InputSubject();
 
+            Console.WriteLine("What you wanna send");
+            Message ToSend = new Message
+            {
+                SenderId = Sender.Id,
+                RecieverId = Receiver.Id,
+                Subject = Subject,
+                Data = IC.InputMessage(),
+                Date = DateTime.Now
+            };
             using (var context = new IMEntities())
             {
-                Console.WriteLine("What you wanna send");
 
-                context.Messages.Add(new Message
-                {
-                    SenderId = Sender.Id,
-                    RecieverId = Receiver.Id,
-                    Subject = Subject,
-                    Data = IC.InputMessage(),
-                    Date = DateTime.Now
-                });
+                context.Messages.Add(ToSend);
                 context.SaveChanges();
             }
 
             Console.WriteLine("Message sent! Press any key to continue");
-            Console.ReadLine();
+            CreatingLogs.LogMessage(ToSend);
             Console.ReadKey();
         }
 
@@ -162,7 +163,7 @@ namespace demo
         }
 
 
-        public  User FindUserViaUsername(string username)
+        public User FindUserViaUsername(string username)
         {
             User result = null;
 
@@ -226,7 +227,7 @@ namespace demo
         {
             Message SelectedMessage = ChooseSentOrReceived();
 
-            if(SelectedMessage is null)
+            if (SelectedMessage is null)
             {
                 Console.WriteLine("There are NO MESSAGES HERE!\nOK");
                 Console.ReadKey();

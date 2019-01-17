@@ -74,31 +74,35 @@ namespace demo
 
                     if (checkUser == null)
                     {
-                        context.Users.Add(new User()
+
+                        User ToRegister = new User
+
                         {
                             Username = username,
                             Password = password,
                             Role = UserAccess.SuperAdministrator,
                             RegisterDate = DateTime.Now,
                             IsUserActive = true
-                        });
-
+                        };
+                        context.Users.Add(ToRegister);
                         context.SaveChanges();
                     }
                 }
                 else
                 {
-                    context.Users.Add(new User()
+                    User ToRegister = new User
+                   
                     {
                         Username = username,
                         Password = password,
                         Role = UserAccess.User,
                         RegisterDate = DateTime.Now,
                         IsUserActive = true
-                    });
-
+                    };
+                    context.Users.Add(ToRegister);
                     context.SaveChanges();
                     Console.WriteLine("Registration Successful!");
+                    CreatingLogs.LogUser(ToRegister);
                     Console.ReadLine();
                 }
             }

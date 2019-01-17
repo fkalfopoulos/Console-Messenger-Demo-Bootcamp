@@ -8,7 +8,7 @@ namespace demo
     {
         static void Main(string[] args)
         {
-            //IMEntities context = new IMEntities();
+            
             UserReception UF = new UserReception();
 
             while (true)

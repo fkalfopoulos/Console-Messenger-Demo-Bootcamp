@@ -1,65 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace demo
 {
     class CreatingLogs
     {
-        public static class LogFile
+
+        static string FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)) + @"\";
+        const string UserLog = "Users.txt", MessageLog = "Logmessages.txt";
+
+        public static void LogMessage(Message LM)
         {
-            static string Path = Properties.Settings.Default.path;
-            const string UserLog = "Users.txt", MessageLog = "Logmessages.txt";
+            Debug.Write(FilePath);
+            File.AppendAllText(FilePath + MessageLog, $"Date : {LM.Date}, Message ID : {LM.SenderId}, Message Content : {LM.Data}, Receiver ID : {LM.RecieverId}");
+        }
 
-            public static void LogMessage(Message LM)
+        public static void LogUser(User LU)
+        {
+            Debug.Write(FilePath);
+            File.AppendAllText(FilePath + UserLog, $"Username : {LU.Username},Time of Registration : {LU.RegisterDate}, User role : {LU.Role}");
+        }
+
+        public static List<User> ReadUserLog()
+        {
+            List<User> UserList = new List<User>();
+            foreach (string line in File.ReadLines(FilePath + UserLog))
             {
-                File.AppendAllText(Path + MessageLog, $"{LM.Date},{LM.SenderId},{LM.Data},{LM.RecieverId}");
-            }
-
-            public static void LogUser(User LU)
-            {
-                File.AppendAllText(Path + UserLog, $"{LU.Username},{LU.RegisterDate},{LU.Role}");
-            }
-
-            public static void UserList( User UL)
-
-            {
-                
-            }
-
-
-            public static List<User> ReadUserLog()
-            {
-                List<User> UserList = new List<User>();
-                foreach (string line in File.ReadLines(Path + UserLog))
+                string[] UserElements = line.Split(',');
+                UserList.Add(new User()
                 {
-                    string[] UserElements = line.Split(',');
-                    UserList.Add(new User()
-                    {
-                        Username = UserElements[0],
-                        RegisterDate = DateTime.Parse(UserElements[1]),
-                        Role = (UserAccess)int.Parse(UserElements[2])
-                    });
-                }
-                return UserList;
+                    Username = UserElements[0],
+                    RegisterDate = DateTime.Parse(UserElements[1]),
+                    Role = (UserAccess)int.Parse(UserElements[2])
+                });
             }
+            return UserList;
+        }
 
-            public static List<Message> ReadMessageLog()
+        public static List<Message> ReadMessageLog()
+        {
+            List<Message> MessageList = new List<Message>();
+            foreach (string line in File.ReadLines(FilePath + UserLog))
             {
-                List<Message> MessageList = new List<Message>();
-                foreach (string line in File.ReadLines(Path + UserLog))
+                string[] MessageElements = line.Split(',');
+                MessageList.Add(new Message()
                 {
-                    string[] MessageElements = line.Split(',');
-                    MessageList.Add(new Message()
-                    {
-                        Date = DateTime.Parse(MessageElements[1]),
-                        SenderId = int.Parse(MessageElements[1]),
-                        Data = MessageElements[2],
-                        RecieverId = int.Parse(MessageElements[3])
-                    });
-                }
-                return MessageList;
+                    Date = DateTime.Parse(MessageElements[1]),
+                    SenderId = int.Parse(MessageElements[1]),
+                    Data = MessageElements[2],
+                    RecieverId = int.Parse(MessageElements[3])
+                });
             }
+            return MessageList;
         }
     }
 }
