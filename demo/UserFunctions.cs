@@ -108,11 +108,7 @@ namespace demo
             }
         }
 
-        private User SelectUser()
-        {
-            throw new NotImplementedException();
-        }
-
+ 
         public void ViewProfile()
         {
             Console.Clear();
@@ -135,7 +131,7 @@ namespace demo
 
         public void ViewAllUsers()
         {
-            // MOVE TO class ViewUser.cs and break to more methods
+            
             List<string> ViewMenuOptions = new List<string>
            {
                 "View Usernames",

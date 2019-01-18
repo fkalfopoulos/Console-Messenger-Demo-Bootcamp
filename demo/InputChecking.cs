@@ -128,7 +128,6 @@ namespace demo
             }
             return false;
         }              
-
        
         public bool CorrectUsernameLength(string username)
         {

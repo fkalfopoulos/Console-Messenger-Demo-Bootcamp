@@ -9,10 +9,12 @@ namespace demo
     public class DatabaseAccess
     {
         User LoggedIn;
+        public InputChecking IC;
 
         public DatabaseAccess(User ActiveUser)
         {
             LoggedIn = ActiveUser;
+            IC = new InputChecking();
         }
 
         public List<User> GetAllUsers()
@@ -71,6 +73,8 @@ namespace demo
                 WithNewName.Username = NewUserName;
                 context.Entry(WithNewName).State = EntityState.Modified;
                 context.SaveChanges();
+                Console.WriteLine("Username updated Succesfully \n Press any key to continue");
+                Console.ReadKey();
             }
         }
 
@@ -81,11 +85,13 @@ namespace demo
                 Console.Clear();
 
                 Console.Write("\n\n\n\n\tNew Password: ");
-                string NewPass = Console.ReadLine();
-                User WithNewName = context.Users.Single(ThisUser => ThisUser.Id == ToChange.Id);
+                string NewPass = IC.InputPassword();
+                    User WithNewName = context.Users.Single(ThisUser => ThisUser.Id == ToChange.Id);
                 WithNewName.Password = NewPass;
                 context.Entry(WithNewName).State = EntityState.Modified;
                 context.SaveChanges();
+                Console.WriteLine("Password Updated Succesfully \n Press any key to continue");
+                Console.ReadKey();
             }
         }
 
@@ -100,6 +106,8 @@ namespace demo
                 context.Entry(WithnewRole).State = EntityState.Modified;
                 context.SaveChanges();
                 Console.WriteLine($"New User Role is: {WithnewRole.Role}");
+                Console.WriteLine("Role Updated Succesfully \n Press any key to continue");
+                Console.ReadKey();
             }
         }
 
@@ -110,7 +118,7 @@ namespace demo
                 "Delete All",
                 "Delete From Recieved",
                 "Delete From Sent",
-                "Return back"
+                
             };
            
             int option = ConsoleMenu.GetUserChoice(DeleteMenuOptions, DesignedStrings.DeleteMsg).IndexOfChoice;
@@ -150,7 +158,7 @@ namespace demo
                     newMessage.Subject = newMessageSubject;
                     newMessage.Data = newMessageData;
                     context.Entry(newMessage).State = EntityState.Modified;
-                    // x = (y > 0) ? 5 : -1;
+                    
                     // x = (expression) ? true : false;
                     Console.Write(context.SaveChanges() > 0 ? $"\n\n Message updated successfully\n\n\tOK" : "DUUUUde failure occurred!");
                 }
