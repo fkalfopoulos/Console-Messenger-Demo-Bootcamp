@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace demo
 {
@@ -54,7 +55,7 @@ namespace demo
                     }
                 }
             } while (keyPressed.Key != ConsoleKey.Enter);
-
+            Debug.WriteLine(currentOption);
             return new UserChoice
             {
                 IndexOfChoice = currentOption,

@@ -15,7 +15,7 @@ namespace demo
             {
                 Console.Clear();
 
-                Console.WriteLine();
+                Console.WriteLine(DesignedStrings.DemoMessenger);
                 Console.WriteLine("Choose an option");
                 Console.WriteLine("1:Register");
                 Console.WriteLine("2:Login");
@@ -40,8 +40,7 @@ namespace demo
                     //Αν το input του χρήστη είναι το παρακάτω τότε θα προχωρήσει στην αποθήκευση
                     if (username == "admin" && password == "admin")
                     {
-                        //Χρησιμοποιούμε το αντικείμενο p του program και το αντικείμενο του μοντέλου της βάσης μας context για να ελέγξουμε
-                        //μέσα στο DbSet<Users> αν ο χρήστης υπάρχει ήδη.
+                        
                         var checkUser = context.Users.SingleOrDefault(c => c.Username == username);
 
                         //Αν δεν υπάρχει κάνουμε καταχώρηση του χρήστη Admin..
@@ -52,7 +51,7 @@ namespace demo
                             {
                                 Username = username,
                                 Password = password,
-                                Role = 1
+                                Role = UserAccess.User
                             };
                             //Καταχώρηση
                             context.Users.Add(newUser);
@@ -66,7 +65,6 @@ namespace demo
 
                         }
 
-                        //Αν ο χρήστης Admin υπάρχει ήδη βγάζει μήνυμα λάθους.
                         else
                         {
                             Console.Clear();
@@ -74,7 +72,7 @@ namespace demo
                             Console.ReadLine();
                         }
                     }
-                    // Αν το όνομα χρήστη ή ο κωδικός δεν είναι admin τότε βγάζει μήνυμα λάθους
+                    
                     else
                     {
                         Console.Clear();
@@ -87,6 +85,7 @@ namespace demo
                 if (option == "2")
                 {
                     Console.Clear();
+                   Console.WriteLine(DesignedStrings.LoginString); 
                     Console.WriteLine("Login user");
                     Console.WriteLine("-------------");
                     Console.WriteLine();
@@ -94,18 +93,18 @@ namespace demo
                     Console.Write("Enter username:");
                     var username = Console.ReadLine();
                     Console.Write("Enter password:");
-                    var password = Console.ReadLine();
+                    string password = Console.ReadLine();                           //MenuUtilities.MaskPassword();
 
                     //Ελέγχει να δει αν ο χρήστης όντως είναι καταχωρημένος στην βάση
                     var checkUser = context.Users.Where(c => c.Username == username).SingleOrDefault();
 
-                    //Σε περίπτωση που δεν υπάρχει, μήνυμα λάθους.
+                    
                     if (checkUser == null)
                     {
                         Console.WriteLine("User does not exist. Press enter to leave");
                         Console.ReadLine();
                     }
-                    //Σε περίπτωση που υπάρχει, μήνυμα καλωσορίσματος
+                    
                     else
                     {
                         Console.WriteLine("Welcome {0}", checkUser.Username);

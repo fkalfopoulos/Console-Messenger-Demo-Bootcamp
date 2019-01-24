@@ -1,37 +1,58 @@
 ﻿using IMModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data.Entity;
+using System.Linq;
 
 namespace demo
 {
+
     public class DatabaseAccess
     {
-        public void AddUser(string username, string password, int type = 1)
+        public User LoggedIn;
+
+        public void AddUser(string username, string password, UserAccess Role = UserAccess.User)
         {
             using (var context = new IMEntities())
             {
                 Console.Clear();
+                Console.WriteLine(DesignedStrings.CreateUsr);
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine("Creating new user profile.....Please wait...");
-                context.Users.Add(new User());
+
+
+                context.Users.Add(new User
+                {
+                    Username = username,
+                    Password = password,
+                    Role = Role,
+                    RegisterDate = DateTime.Now,
+                    IsUserActive = true
+                });
+
                 context.SaveChanges();
                 Console.WriteLine($"\nNew user profile with username '{username}' has been created!");
+                Console.WriteLine($"\n Press any key to continue");
+                Console.ReadKey();
+
                 Console.ResetColor();
             }
         }
 
         public void DeleteUser(int id)
         {
+
+            Console.WriteLine(DesignedStrings.DeleteUsr);
+
+            ViewAllUsers();
+
             string usernameForDelete;
 
             Console.WriteLine("Choose the username of the user you would like to delete:");
-            ViewAllUsers();
             usernameForDelete = Console.ReadLine();
 
-            if (usernameForDelete is null) // is ESC is pressed return to admin menu
+            if (usernameForDelete is null)
             {
                 return;
             }
@@ -46,9 +67,8 @@ namespace demo
             {
                 User ToBeDeleted = FindUserViaUsername(usernameForDelete);
 
-                if (ToBeDeleted.Role == (int) RoleEnum.SuperAdmin)
+                if (ToBeDeleted.Role == UserAccess.SuperAdministrator)
                 {
-                    Console.WriteLine("Master, you cannot give away your powers!");
                     Console.WriteLine("\n\nPress any key to go back to Super Admin Menu.");
                     Console.ReadKey();
                     return;
@@ -57,29 +77,83 @@ namespace demo
 
                 if (!userActive)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"\nThe user with username '{usernameForDelete}' is no longer active.");
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine("\n\nPress any key to go back to Super Admin Menu.");
-                    Console.ResetColor();
+
+                    Console.WriteLine("\n\nPress any key to go back to Menu.");
+
                     Console.ReadKey();
                 }
                 else
                 {
                     using (var context = new IMEntities())
                     {
-                        User ToDelete = context.Users.Find(ToBeDeleted.Id);
+                        User ToDelete = context.Users.FirstOrDefault(usr => usr.Id == ToBeDeleted.Id);
                         context.Users.Remove(ToDelete);
                         context.SaveChanges();
                     }
 
-                    Console.WriteLine($"\nUser '{usernameForDelete}' is no longer active Master.");
-                    Console.WriteLine("\n\nPress any key to go back to Super Admin Menu.");
+                    Console.WriteLine($"\nUser '{usernameForDelete}' is no longer active .");
+                    Console.WriteLine("\n\nPress any key to go back to  Menu.");
 
                     Console.ReadKey();
                 }
             }
         }
+
+
+        public void Update()
+        {
+            using (var context = new IMEntities())
+            {
+                List<User> AllUsers = context.Users.ToList();
+                UserChoice Choice = ConsoleMenu.GetUserChoice(AllUsers.Select(user => user.Username).ToList(), "Choose the user you wanna edit");
+
+                User newuser = AllUsers[Choice.IndexOfChoice];
+
+                List<string> UpdateMenuOptions = new List<string>
+                {
+                    "Edit Role",
+                    "Edit Username",
+                    "Edit Password"
+                };
+
+                int option = ConsoleMenu.GetUserChoice(UpdateMenuOptions, DesignedStrings.UpdateUserMenu).IndexOfChoice;
+                switch (option)
+                {
+                    case 0:
+                        Console.WriteLine("\n\n\n\n\tNew Role: ");
+                        newuser.Role = (UserAccess)ConsoleMenu.GetUserChoice(new List<string> { "Super Admin", "Moderator", "User" }).IndexOfChoice;
+                        Console.WriteLine($"New User Role is: {newuser.Role}");
+                        break;
+                    case 1:
+                        Console.WriteLine("\n\n\n\n\tnew Username: ");
+                        newuser.Username = Console.ReadLine();
+                        break;
+                    case 2:
+                        Console.WriteLine("\n\tnew Password: ");
+                        newuser.Username = Console.ReadLine();
+                        break;
+                }
+                context.SaveChanges();
+                Console.ReadKey();
+            }
+        }
+
+
+        private bool DoesMessageExist(int messageid)
+        {
+            using (var context = new IMEntities())
+            {
+                return context.Messages.Any(m => m.MessageId == messageid);
+            }
+
+        }
+
+        private void ChooseSentOrReceived()
+        {
+
+        }
+
 
         public static User FindUserViaUsername(string Username)
         {
@@ -105,6 +179,8 @@ namespace demo
                 return context.Users.Any(x => x.Username == username);
             }
         }
+
+
 
         public bool IsPasswordCorrect(string username, string password)
         {
@@ -161,87 +237,8 @@ namespace demo
         }
 
 
-        //public void EditUserType()
-        //{
-        //    bool userExists;
-        //    string usernameToEdit;
-        //    do
-        //    {
-        //        Console.Clear();
-               
-        //        Console.WriteLine("======= Welcome Admin =======");
-               
-        //        Console.WriteLine("/n======= You have the power to edit the type of a user! =======");
-        //        Console.WriteLine();
-        //        Console.WriteLine("Choose the username of the user you would like to edit:");
-        //        usernameToEdit = InputUserName(); // username is Null if ESC is pressed during input
-        //        if (usernameToEdit is null) // is ESC is pressed return to admin menu
-        //        {
-        //            return;
-        //        }
-        //        if (usernameToEdit == "admin")
-        //        {
-                                    
-        //            Console.WriteLine("\n\nPress any key to go back to Super Admin Menu.");
-                    
-        //            Console.ReadKey();
-        //            return;
-        //        }
-        //        userExists = DoesUsernameExist(usernameToEdit); // Check if username already exists in database
-        //        if (!userExists)
-        //        {
-                    
-        //            Console.WriteLine("We are so sorry  but the username you entered does not exist.\nPlease choose another user to edit.");
-                  
-        //            Console.ReadKey();
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine();
-        //            Console.WriteLine($"Please choose a type for user '{usernameToEdit}'.");
-        //            Console.WriteLine("Press 1 for admin, 2 for Moderetor, 3 for simple user:");
 
-                    
-        //            int userType;
-        //            bool successType = false;
-        //            do
-        //            {
-        //                string input = Console.ReadLine();
-        //                if (int.TryParse(input, out userType))
-        //                {
-        //                    if (userType != 1 && userType != 2 && userType != 3)
-        //                    {
-        //                        Console.WriteLine("That type does not exist. Please try again.");
-        //                    }
-        //                    else
-        //                    {
-        //                        Console.WriteLine($"\nYou chose type {userType}.");
-        //                        successType = true;
-        //                    }
-        //                }
-        //                else // Parse failed
-        //                {
-        //                    Console.WriteLine("Invalid Input. Please try again.");
 
-        //                }
-        //            } while (!successType);
-
-                   
-
-        //    //        using (var context = new IMEntities())
-        //    //        {
-        //    //         context.Users.Where(x => x.Username == usernameToEdit).FirstOrDefault().Role = user.RoleEnum;
-        //    //            context.SaveChanges();
-        //    //        }
-        //    //        Console.WriteLine();                    
-        //    //        Console.WriteLine($"User '{usernameToEdit}' is now user of type {userType}: {(UserTypes)userType}.");
-                   
-        //    //        Console.WriteLine("\n\nPress any key to go back to Super Admin Menu.");
-        //    //        Console.ResetColor();
-        //    //        Console.ReadKey();
-        //    //    }
-        //    //} while (!userExists);
-        //}
 
         public string InputUserName()
         {
@@ -283,6 +280,11 @@ namespace demo
             return username;
         }
 
+
+
+
+
+
         public List<Message> GetUserMessages(User LoggedIn, bool IsUserSender)
         {
             using (IMEntities DB = new IMEntities())
@@ -305,6 +307,8 @@ namespace demo
                 }
             }
         }
-    }   
+    }
 }
+
+
 
