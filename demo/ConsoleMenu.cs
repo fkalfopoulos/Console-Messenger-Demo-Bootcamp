@@ -25,7 +25,8 @@ namespace demo
                 {
                     if (currentOption == c)
                     {
-                        Console.WriteLine($">> {c}: {Options[c]}");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"{c}: {Options[c]}");
                         Console.ResetColor();
                     }
                     else
@@ -61,6 +62,11 @@ namespace demo
                 IndexOfChoice = currentOption,
                 NameOfChoice = Options[currentOption]
             };
+        }
+
+        internal static object GetUserChoice(List<User> usersList, string deleteUsr)
+        {
+            throw new NotImplementedException();
         }
     }
 

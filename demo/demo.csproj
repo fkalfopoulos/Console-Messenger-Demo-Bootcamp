@@ -52,12 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatabaseAccessMessages.cs" />
+    <Compile Include="CreatingLogs.cs" />
     <Compile Include="DesignedStrings.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="ConsoleMenu.cs" />
     <Compile Include="MenuManager.cs" />
-    <Compile Include="MenuUtilities.cs" />
+    <Compile Include="InputChecking.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Migrations\201901051128447_InitialCreate.cs" />
     <Compile Include="Migrations\201901051128447_InitialCreate.Designer.cs">
@@ -99,13 +98,17 @@
     <Compile Include="Model\IMEntities.cs">
       <DependentUpon>data.edml</DependentUpon>
     </Compile>
-    <Compile Include="ModeratorMenu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoleEnum.cs" />
     <Compile Include="DatabaseAccess.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="User.cs" />
-    <Compile Include="UserMenu.cs" />
+    <Compile Include="UserFunctions.cs" />
+    <Compile Include="UserReception.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -125,6 +128,10 @@
       <DependentUpon>data.edml</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201901051128447_InitialCreate.resx">
